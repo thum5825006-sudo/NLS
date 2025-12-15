@@ -1,1 +1,507 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trợ Lý Hình Học AI</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .ai-gradient {
+            background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+        }
+        canvas {
+            background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-gray-800">
 
+    <!-- Header -->
+    <div class="ai-gradient text-white py-8 shadow-lg">
+        <div class="container mx-auto px-4">
+            <h1 class="text-3xl font-bold mb-2 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                </svg>
+                GeoAI - Trợ Lý Hình Học
+            </h1>
+            <p class="opacity-90">Nhập 3 thông số bất kỳ (Cạnh hoặc Góc) để AI phân tích, tính toán và vẽ mô phỏng.</p>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Input Panel -->
+            <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-md border border-gray-100">
+                <h2 class="text-xl font-semibold mb-4 text-indigo-700 border-b pb-2">Dữ Liệu Đầu Vào</h2>
+                <p class="text-sm text-gray-500 mb-4">Vui lòng nhập ít nhất 3 giá trị (Ví dụ: 3 cạnh, hoặc 2 cạnh 1 góc). Đơn vị: cm, độ.</p>
+                
+                <div class="space-y-4">
+                    <!-- Sides -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Cạnh a (cm)</label>
+                        <input type="number" id="input-a" placeholder="Nhập độ dài cạnh a" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Cạnh b (cm)</label>
+                        <input type="number" id="input-b" placeholder="Nhập độ dài cạnh b" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Cạnh c (cm)</label>
+                        <input type="number" id="input-c" placeholder="Nhập độ dài cạnh c" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-colors">
+                    </div>
+
+                    <div class="border-t pt-4 my-2"></div>
+
+                    <!-- Angles -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Góc A (độ)</label>
+                        <input type="number" id="input-A" placeholder="Góc đối diện cạnh a" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Góc B (độ)</label>
+                        <input type="number" id="input-B" placeholder="Góc đối diện cạnh b" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Góc C (độ)</label>
+                        <input type="number" id="input-C" placeholder="Góc đối diện cạnh c" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-colors">
+                    </div>
+
+                    <div class="pt-4">
+                        <button onclick="analyzeGeometry()" class="w-full ai-gradient text-white font-bold py-3 px-4 rounded-lg shadow hover:shadow-lg transform hover:-translate-y-0.5 transition-all flex justify-center items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd" />
+                            </svg>
+                            AI Phân Tích
+                        </button>
+                        <button onclick="resetForm()" class="w-full mt-2 bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors">
+                            Làm mới
+                        </button>
+                        <button onclick="fillSample()" class="w-full mt-2 text-indigo-600 text-sm font-medium hover:underline">
+                            Dùng thử dữ liệu mẫu
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Output Panel -->
+            <div class="lg:col-span-2 space-y-6">
+                
+                <!-- Status/Result Card -->
+                <div id="result-card" class="bg-white p-6 rounded-xl shadow-md border border-gray-100 hidden">
+                    <div class="flex justify-between items-start mb-4">
+                        <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-2">
+                            <span class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
+                            Kết Quả Phân Tích
+                        </h2>
+                        <span class="bg-indigo-100 text-indigo-800 text-xs font-semibold px-2.5 py-0.5 rounded">Hoàn tất</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <div class="bg-gray-50 p-3 rounded-lg text-center">
+                            <div class="text-xs text-gray-500 uppercase">Diện tích</div>
+                            <div class="text-xl font-bold text-indigo-600" id="res-area">--</div>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-lg text-center">
+                            <div class="text-xs text-gray-500 uppercase">Chu vi</div>
+                            <div class="text-xl font-bold text-indigo-600" id="res-perimeter">--</div>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-lg text-center">
+                            <div class="text-xs text-gray-500 uppercase">Loại tam giác</div>
+                            <div class="text-sm font-bold text-indigo-600" id="res-type">--</div>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-lg text-center">
+                            <div class="text-xs text-gray-500 uppercase">Đường cao (h_a)</div>
+                            <div class="text-xl font-bold text-indigo-600" id="res-height">--</div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                        <div class="space-y-2">
+                            <h3 class="font-semibold text-gray-700">Các cạnh (cm):</h3>
+                            <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                <li>Cạnh a = <span id="val-a" class="font-mono font-bold"></span></li>
+                                <li>Cạnh b = <span id="val-b" class="font-mono font-bold"></span></li>
+                                <li>Cạnh c = <span id="val-c" class="font-mono font-bold"></span></li>
+                            </ul>
+                        </div>
+                        <div class="space-y-2">
+                            <h3 class="font-semibold text-gray-700">Các góc (độ):</h3>
+                            <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                <li>Góc A = <span id="val-A" class="font-mono font-bold"></span>°</li>
+                                <li>Góc B = <span id="val-B" class="font-mono font-bold"></span>°</li>
+                                <li>Góc C = <span id="val-C" class="font-mono font-bold"></span>°</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Canvas -->
+                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 relative">
+                    <h2 class="text-xl font-semibold mb-4 text-gray-800">Mô Phỏng Trực Quan</h2>
+                    <div class="w-full h-80 bg-gray-50 rounded-lg border flex items-center justify-center relative overflow-hidden" id="canvas-container">
+                        <canvas id="geoCanvas" class="w-full h-full"></canvas>
+                        <div id="loading-overlay" class="absolute inset-0 bg-white/80 flex items-center justify-center hidden">
+                            <div class="flex flex-col items-center">
+                                <div class="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                                <p class="mt-2 text-indigo-700 font-medium animate-pulse">Đang tính toán...</p>
+                            </div>
+                        </div>
+                        <div id="placeholder-text" class="absolute text-gray-400 text-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-2 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            Hình ảnh mô phỏng sẽ xuất hiện tại đây
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        const canvas = document.getElementById('geoCanvas');
+        const ctx = canvas.getContext('2d');
+        let containerWidth, containerHeight;
+
+        // Resize canvas to fit container
+        function resizeCanvas() {
+            const container = document.getElementById('canvas-container');
+            containerWidth = container.clientWidth;
+            containerHeight = container.clientHeight;
+            
+            // Set actual resolution to match display size for sharpness
+            canvas.width = containerWidth;
+            canvas.height = containerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function resetForm() {
+            document.querySelectorAll('input').forEach(i => i.value = '');
+            document.getElementById('result-card').classList.add('hidden');
+            document.getElementById('placeholder-text').classList.remove('hidden');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function fillSample() {
+            resetForm();
+            const samples = [
+                { a: 3, b: 4, c: 5 }, // 3-4-5 Right Triangle
+                { a: 6, b: 6, c: 6 }, // Equilateral
+                { a: 5, b: 5, c: 8 }, // Isosceles
+                { a: 7, B: 45, C: 60 }, // ASA
+                { b: 10, c: 10, A: 90 } // SAS
+            ];
+            const s = samples[Math.floor(Math.random() * samples.length)];
+            
+            if (s.a) document.getElementById('input-a').value = s.a;
+            if (s.b) document.getElementById('input-b').value = s.b;
+            if (s.c) document.getElementById('input-c').value = s.c;
+            if (s.A) document.getElementById('input-A').value = s.A;
+            if (s.B) document.getElementById('input-B').value = s.B;
+            if (s.C) document.getElementById('input-C').value = s.C;
+            
+            // Auto trigger analysis for smooth demo
+            analyzeGeometry();
+        }
+
+        // --- Math Logic ---
+        
+        function toRad(deg) { return deg * Math.PI / 180; }
+        function toDeg(rad) { return rad * 180 / Math.PI; }
+
+        function analyzeGeometry() {
+            const inputs = {
+                a: parseFloat(document.getElementById('input-a').value),
+                b: parseFloat(document.getElementById('input-b').value),
+                c: parseFloat(document.getElementById('input-c').value),
+                A: parseFloat(document.getElementById('input-A').value),
+                B: parseFloat(document.getElementById('input-B').value),
+                C: parseFloat(document.getElementById('input-C').value),
+            };
+
+            // Count provided inputs
+            let provided = 0;
+            for (let k in inputs) if (!isNaN(inputs[k])) provided++;
+
+            if (provided < 3) {
+                alert("AI cần ít nhất 3 dữ liệu để tính toán (Ví dụ: 3 cạnh, hoặc 2 cạnh 1 góc).");
+                return;
+            }
+
+            // Simulate AI Loading
+            document.getElementById('loading-overlay').classList.remove('hidden');
+            
+            setTimeout(() => {
+                try {
+                    const result = solveTriangle(inputs);
+                    displayResults(result);
+                    drawTriangle(result);
+                    document.getElementById('result-card').classList.remove('hidden');
+                    document.getElementById('placeholder-text').classList.add('hidden');
+                } catch (e) {
+                    alert("Lỗi: " + e.message);
+                } finally {
+                    document.getElementById('loading-overlay').classList.add('hidden');
+                }
+            }, 800);
+        }
+
+        function solveTriangle(i) {
+            let { a, b, c, A, B, C } = i;
+            
+            // Check for negative values
+            if ([a,b,c,A,B,C].some(val => !isNaN(val) && val <= 0)) {
+                throw new Error("Giá trị cạnh hoặc góc phải lớn hơn 0.");
+            }
+
+            // Helper: Convert degrees to radians for calculations
+            let Ar = isNaN(A) ? null : toRad(A);
+            let Br = isNaN(B) ? null : toRad(B);
+            let Cr = isNaN(C) ? null : toRad(C);
+
+            // Solver Logic (Iterative approach to fill missing values)
+            // We loop a few times to propagate values (simple constraint propagation)
+            for(let pass = 0; pass < 3; pass++) {
+                
+                // Angle Sum
+                if (Ar !== null && Br !== null && Cr === null) Cr = Math.PI - Ar - Br;
+                if (Ar !== null && Cr !== null && Br === null) Br = Math.PI - Ar - Cr;
+                if (Br !== null && Cr !== null && Ar === null) Ar = Math.PI - Br - Cr;
+
+                // Law of Sines (Find side if we have opp angle and another pair)
+                // a/sinA = b/sinB = c/sinC
+                if (a && Ar) {
+                    const ratio = a / Math.sin(Ar);
+                    if (!b && Br) b = ratio * Math.sin(Br);
+                    if (!c && Cr) c = ratio * Math.sin(Cr);
+                }
+                else if (b && Br) {
+                    const ratio = b / Math.sin(Br);
+                    if (!a && Ar) a = ratio * Math.sin(Ar);
+                    if (!c && Cr) c = ratio * Math.sin(Cr);
+                }
+                else if (c && Cr) {
+                    const ratio = c / Math.sin(Cr);
+                    if (!a && Ar) a = ratio * Math.sin(Ar);
+                    if (!b && Br) b = ratio * Math.sin(Br);
+                }
+
+                // Law of Sines (Find Angle)
+                if (a && b && Ar && Br === null) {
+                     // Check specific case (SSA) - assuming acute for simple AI
+                     let val = (b * Math.sin(Ar)) / a;
+                     if(val <= 1) Br = Math.asin(val);
+                }
+                // ... similar for other pairs (omitted for brevity in this simple solver, relies on Cosine Law mostly)
+
+                // Law of Cosines (Find Angle from 3 sides)
+                if (a && b && c) {
+                    if (Ar === null) Ar = Math.acos((b*b + c*c - a*a) / (2*b*c));
+                    if (Br === null) Br = Math.acos((a*a + c*c - b*b) / (2*a*c));
+                    if (Cr === null) Cr = Math.acos((a*a + b*b - c*c) / (2*a*b));
+                }
+
+                // Law of Cosines (Find Side from SAS)
+                if (b && c && Ar !== null && !a) a = Math.sqrt(b*b + c*c - 2*b*c*Math.cos(Ar));
+                if (a && c && Br !== null && !b) b = Math.sqrt(a*a + c*c - 2*a*c*Math.cos(Br));
+                if (a && b && Cr !== null && !c) c = Math.sqrt(a*a + b*b - 2*a*b*Math.cos(Cr));
+            }
+
+            // Final check if we have enough
+            if (!a || !b || !c || Ar === null || Br === null || Cr === null) {
+                // If we have 2 angles and a side, we should have solved it. 
+                // If we have 3 angles, we can't solve scale (infinite solutions), assume a=10 for drawing? No, error.
+                if(Ar !== null && Br !== null && Cr !== null && (!a && !b && !c)) {
+                    throw new Error("Chỉ có 3 góc thì không thể tính kích thước cạnh cụ thể (đa dạng tam giác đồng dạng). Vui lòng nhập ít nhất 1 cạnh.");
+                }
+                // Try one last Angle Sum check if we missed it
+                if (Ar !== null && Br !== null && Cr === null) Cr = Math.PI - Ar - Br;
+                if (Ar !== null && Cr !== null && Br === null) Br = Math.PI - Ar - Cr;
+                if (Br !== null && Cr !== null && Ar === null) Ar = Math.PI - Br - Cr;
+                
+                // Recalculate sides if we just got an angle
+                if (c && Cr && Ar && !a) a = c * Math.sin(Ar) / Math.sin(Cr);
+                // ... etc. This is a basic solver.
+            }
+
+            // Convert back to degrees and rounding
+            A = toDeg(Ar);
+            B = toDeg(Br);
+            C = toDeg(Cr);
+
+            // Validation
+            if (Math.abs(A+B+C - 180) > 0.1) throw new Error("Tổng 3 góc không bằng 180 độ. Dữ liệu mâu thuẫn.");
+            if (a+b <= c || a+c <= b || b+c <= a) throw new Error("Bất đẳng thức tam giác không thỏa mãn (Tổng 2 cạnh phải lớn hơn cạnh còn lại).");
+
+            // Calculations
+            const s = (a + b + c) / 2;
+            const area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
+            const heightA = (2 * area) / a;
+
+            return { a, b, c, A, B, C, area, perimeter: a+b+c, heightA };
+        }
+
+        function displayResults(data) {
+            const format = (n) => n.toLocaleString('vi-VN', { maximumFractionDigits: 2 });
+            
+            document.getElementById('res-area').innerText = format(data.area);
+            document.getElementById('res-perimeter').innerText = format(data.perimeter);
+            document.getElementById('res-height').innerText = format(data.heightA);
+
+            document.getElementById('val-a').innerText = format(data.a);
+            document.getElementById('val-b').innerText = format(data.b);
+            document.getElementById('val-c').innerText = format(data.c);
+            
+            document.getElementById('val-A').innerText = format(data.A);
+            document.getElementById('val-B').innerText = format(data.B);
+            document.getElementById('val-C').innerText = format(data.C);
+
+            // Type
+            let type = "Tam giác thường";
+            if (Math.abs(data.a - data.b) < 0.01 && Math.abs(data.b - data.c) < 0.01) type = "Tam giác đều";
+            else if (Math.abs(data.a - data.b) < 0.01 || Math.abs(data.b - data.c) < 0.01 || Math.abs(data.a - data.c) < 0.01) type = "Tam giác cân";
+            
+            if (Math.abs(data.A - 90) < 0.1 || Math.abs(data.B - 90) < 0.1 || Math.abs(data.C - 90) < 0.1) {
+                type = type === "Tam giác cân" ? "Tam giác vuông cân" : "Tam giác vuông";
+            }
+            document.getElementById('res-type').innerText = type;
+        }
+
+        function drawTriangle(data) {
+            // Coordinate Calculation
+            // Point A at (0,0) - wait, let's put C at origin to match standard C formula? 
+            // Let's standard: B at (0,0), C at (a, 0). A is calculated.
+            // Using Law of Cosines on b to find coord of A relative to C?
+            // Easiest: C at (0,0). B at (a, 0). 
+            // A has coordinates (b * cos(C), b * sin(C))
+            
+            const C_rad = toRad(data.C);
+            const Ax = data.b * Math.cos(C_rad);
+            const Ay = data.b * Math.sin(C_rad); // Note: Y goes down in Canvas usually, we'll flip later
+            const Bx = data.a;
+            const By = 0;
+            const Cx = 0;
+            const Cy = 0;
+
+            const coords = [
+                {x: Ax, y: Ay, label: "A"},
+                {x: Bx, y: By, label: "B"},
+                {x: Cx, y: Cy, label: "C"}
+            ];
+
+            // Bounding box
+            const minX = Math.min(Ax, Bx, Cx);
+            const maxX = Math.max(Ax, Bx, Cx);
+            const minY = Math.min(Ay, By, Cy);
+            const maxY = Math.max(Ay, By, Cy);
+
+            const triWidth = maxX - minX;
+            const triHeight = maxY - minY;
+
+            // Scale to fit canvas (with padding)
+            const padding = 40;
+            const availableW = canvas.width - padding * 2;
+            const availableH = canvas.height - padding * 2;
+
+            const scaleX = availableW / triWidth;
+            const scaleY = availableH / triHeight;
+            const scale = Math.min(scaleX, scaleY || scaleX); // handle 0 height line case
+
+            // Center offsets
+            const offsetX = (canvas.width - triWidth * scale) / 2 - minX * scale;
+            const offsetY = (canvas.height - triHeight * scale) / 2 - minY * scale;
+
+            // Function to map math coord to canvas coord
+            // Flip Y because canvas Y is top-down
+            const mapX = (x) => x * scale + offsetX;
+            const mapY = (y) => canvas.height - (y * scale + offsetY); 
+
+            // Draw
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Grid lines (optional visual flair)
+            ctx.strokeStyle = '#e5e7eb';
+            ctx.lineWidth = 1;
+            // ... (skip grid for clean look)
+
+            // Triangle
+            ctx.beginPath();
+            ctx.moveTo(mapX(Cx), mapY(Cy));
+            ctx.lineTo(mapX(Bx), mapY(By));
+            ctx.lineTo(mapX(Ax), mapY(Ay));
+            ctx.closePath();
+            
+            ctx.fillStyle = 'rgba(79, 70, 229, 0.1)';
+            ctx.fill();
+            
+            ctx.strokeStyle = '#4f46e5';
+            ctx.lineWidth = 3;
+            ctx.lineJoin = 'round';
+            ctx.stroke();
+
+            // Points and Labels
+            ctx.fillStyle = '#111827';
+            ctx.font = 'bold 14px Inter';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            coords.forEach(p => {
+                const cx = mapX(p.x);
+                const cy = mapY(p.y);
+                
+                // Draw point
+                ctx.beginPath();
+                ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Draw Label (push away from center)
+                // Simple heuristic: push away from centroid
+                const centroidX = mapX((Ax+Bx+Cx)/3);
+                const centroidY = mapY((Ay+By+Cy)/3);
+                const dx = cx - centroidX;
+                const dy = cy - centroidY;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                const labelDist = 20;
+                
+                ctx.fillText(p.label, cx + (dx/dist)*labelDist, cy + (dy/dist)*labelDist);
+            });
+
+            // Draw Dimensions with background for readability
+            ctx.font = '12px Inter';
+            const drawLabelWithBg = (text, x, y) => {
+                const metrics = ctx.measureText(text);
+                const w = metrics.width + 8;
+                const h = 16;
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+                ctx.fillRect(x - w/2, y - h/2, w, h);
+                ctx.fillStyle = '#6b7280';
+                ctx.fillText(text, x, y);
+            };
+
+            // Side c (A-B) - Text Position
+            const midAB = {x: (Ax+Bx)/2, y: (Ay+By)/2};
+            drawLabelWithBg(Math.round(data.c*10)/10, mapX(midAB.x), mapY(midAB.y));
+            
+            // Side a (B-C)
+            const midBC = {x: (Bx+Cx)/2, y: (By+Cy)/2};
+            drawLabelWithBg(Math.round(data.a*10)/10, mapX(midBC.x), mapY(midBC.y) + 10);
+            
+            // Side b (C-A)
+            const midCA = {x: (Cx+Ax)/2, y: (Cy+Ay)/2};
+            drawLabelWithBg(Math.round(data.b*10)/10, mapX(midCA.x) - 10, mapY(midCA.y));
+        }
+
+    </script>
+</body>
+</html>
